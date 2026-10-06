@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relevé de Cotes - OPENLU</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        /* --- ÉCRAN : centrer la feuille A4 --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #d1d5db;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 20px 0 40px;
+        }
+
+        /* --- FEUILLE A4 FIXE (210mm × 297mm) --- */
+        .a4-page {
+            width: 210mm;
+            height: 297mm;
+            background: white;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5cm;  /* Marges 1.5cm tous côtés */
+        }
+
+        /* --- CADRE BLEU --- */
+        .page-border {
+            border: 3px solid #001A72;
+            border-radius: 20px;
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* --- FILIGRANE --- */
+        .watermark {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotate(-20deg);
+            font-size: 100px;
+            font-weight: 900;
+            color: #001A72;
+            opacity: 0.04;
+            pointer-events: none;
+            z-index: 0;
+            user-select: none;
+        }
+
+        /* --- CONTENU PRINCIPAL --- */
+        .content {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding: 8px 10px;
+        }
+
+        /* --- EN-TÊTE OFFICIEL (PARFAITEMENT CENTRÉ) --- */
+        .header-container {
+            margin-bottom: 6px;
+            width: 100%;
+            text-align: center;
+        }
+        .header-top {
+            position: relative;
+            width: 100%;
+            display: block;
+            text-align: center;
+            padding-bottom: 2px;
+        }
+        .header-logo {
+            position: absolute;
+            left: calc(50% - 275px);
+            top: 50%;
+            transform: translateY(-50%);
+            width: 95px;
+            text-align: left;
+        }
+        .header-logo img {
+            width: 95px;
+            height: 95px;
+            object-fit: contain;
+            display: block;
+        }
+        .header-text {
+            width: 100%;
+            text-align: center;
+            line-height: 1.25;
+            margin: 0 auto;
+        }
+        .header-text .republique {
+            font-size: 13.5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #000;
+            letter-spacing: 0.04em;
+            margin-bottom: 2px;
+            text-align: center;
+        }
+        .header-text .enseignement {
+            font-size: 10.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #000;
+            line-height: 1.25;
+            text-align: center;
+        }
+        .header-text .uni-name-main {
+            font-size: 18px;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: #000;
+            margin: 3px 0 1px;
+            letter-spacing: 0.04em;
+            font-family: 'Outfit', 'Inter', sans-serif;
+            text-align: center;
+        }
+        .header-text .uni-sigle {
+            font-size: 11px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 2px;
+            text-align: center;
+        }
+        .header-text .arrete {
+            font-size: 10px;
+            color: #000;
+            margin: 1px 0;
+            text-align: center;
+        }
+        .header-text .contact-line {
+            font-size: 10px;
+            color: #000;
+            margin: 1px 0;
+            text-align: center;
+        }
+        .header-text .contact-line a {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+        .header-text .bp-line {
+            font-size: 10px;
+            font-weight: 600;
+            color: #000;
+            margin-top: 2px;
+            text-align: center;
+        }
+        .green-bar {
+            height: 5px;
+            background-color: #00a651;
+            width: 100%;
+            margin: 4px 0 6px 0;
+            border-radius: 1px;
+        }
+        /* SECRÉTARIAT GÉNÉRAL ACADÉMIQUE */
+        .sga-section {
+            text-align: center;
+            margin: 4px 0 6px 0;
+            width: 100%;
+        }
+        .sga-section .sga-title {
+            font-size: 15px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #000;
+            text-align: center;
+        }
+
+        /* --- DOMAINE & TITRE --- */
+        .domaine-section { text-align: center; margin: 4px 0 2px; }
+        .domaine-section .domaine-label {
+            font-size: 22.5px; font-weight: 900; color: #001A72;
+            text-transform: uppercase; letter-spacing: 0.12em;
+        }
+        .titre-releve {
+            display: inline-block;
+            border: 1.5px solid black;
+            border-radius: 10px;
+            padding: 2px 20px;
+            font-size: 13.5px;
+            font-weight: 900;
+            text-transform: uppercase;
+            background: white;
+            margin: 3px 0;
+        }
+
+        /* --- INFOS ÉTUDIANT --- */
+        .student-info { font-size: 11px; margin: 3px 0; }
+        .student-info .field { margin-bottom: 1.5px; }
+        .student-info .label { font-weight: 900; text-transform: uppercase; display: inline-block; width: 90px; }
+        .student-info .student-name {
+            font-size: 13px; font-weight: 900; text-transform: uppercase; margin-top: 3px;
+        }
+
+        /* --- TABLEAU --- */
+        .table-wrapper { flex: 1; overflow: hidden; margin-top: 4px; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 8px;
+            background: white;
+        }
+        thead tr {
+            background-color: #001A72;
+            color: white;
+        }
+        th {
+            font-weight: 900;
+            text-transform: uppercase;
+            font-size: 7.5px;
+            text-align: center;
+            padding: 3px 4px;
+            border: 1px solid #001A72;
+            letter-spacing: 0.03em;
+        }
+        td {
+            border: 0.8px solid #cbd5e1;
+            padding: 2px 4px;
+            height: 14px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        td:nth-child(2) { text-align: left; padding-left: 5px; }
+
+        /* Alternance de couleur sur les lignes */
+        tbody tr:nth-child(even) { background-color: #f8fafc; }
+        tbody tr:nth-child(odd)  { background-color: #ffffff; }
+
+        /* Séparateur vert */
+        .green-separator td {
+            background-color: #059669 !important;
+            height: 6px !important;
+            border: none;
+            padding: 0;
+        }
+
+        /* En-tête de semestre */
+        tr.sub-header td, tr.sub-header td:nth-child(2) {
+            background-color: #dbeafe !important;
+            color: #001A72;
+            font-weight: 900;
+            text-align: center;
+            font-size: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            border-top: 1.5px solid #001A72;
+            border-bottom: 1px solid #93c5fd;
+        }
+
+        /* Résultats / totaux */
+        tr.result-row td { background-color: #f0fdf4 !important; font-weight: 700; border-top: 1px solid #86efac; }
+        tr.annuel-header td { background-color: #f1f5f9 !important; font-weight: 900; text-transform: uppercase; border-top: 2px solid #334155; }
+        tr.font-bold td { font-weight: 700; background-color: #fafafa !important; }
+
+        /* Notes validées / non validées */
+        .note-v { color: #15803d; font-weight: 900; }
+        .note-nv { color: #b91c1c; font-weight: 900; }
+
+        /* Utilitaires utilisés par le contrôleur */
+        .text-left { text-align: left !important; }
+        .text-center { text-align: center !important; }
+        .pl-2 { padding-left: 4px !important; }
+        .pl-4 { padding-left: 8px !important; }
+        .pl-8 { padding-left: 16px !important; }
+        .italic { font-style: italic; }
+        .uppercase { text-transform: uppercase; }
+        .font-black { font-weight: 900; }
+        .bg-gray-100 { background-color: #f3f4f6 !important; }
+
+
+        tr.total-row td { font-weight: 700; }
+
+        /* --- SIGNATURES --- */
+        .signatures {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-top: -2cm;
+            padding-top: 6px;
+            border-top: 1px dashed #9ca3af;
+        }
+        .sig-block { text-align: center; font-size: 10.5px; }
+        .sig-block .sig-title { font-weight: 900; text-transform: uppercase; font-size: 10.5px; margin-bottom: 2px; }
+        .sig-block .sig-date { font-style: italic; font-size: 10px; margin-bottom: 4px; }
+        .sig-block .sig-name { font-weight: 700; font-size: 10.5px; margin-top: 65px; }
+        .sig-line {
+            border-top: 1px dotted #374151;
+            width: 130px;
+            margin: 0 auto;
+        }
+
+        /* --- PIED DE PAGE --- */
+        .page-footer {
+            text-align: right;
+            font-size: 9px;
+            margin-top: 4px;
+            color: #374151;
+        }
+        .page-footer strong { text-transform: uppercase; font-weight: 900; }
+
+        /* --- IMPRESSION A4 avec marges 2cm --- */
+        @page {
+            size: A4 portrait;
+            margin: 1.5cm;  /* Marges 1.5cm tous côtés à l'impression */
+        }
+        @media print {
+            html, body {
+                width: 210mm;
+                height: 297mm;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: white !important;
+            }
+            .a4-page {
+                box-shadow: none !important;
+                width: 100% !important;
+                height: 100% !important;
+                padding: 0 !important; /* @page gère les marges */
+                page-break-after: avoid;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="a4-page">
+
+    <div class="page-border">
+
+        <!-- Filigrane -->
+        <div class="watermark">OPENLU</div>
+
+        <div class="content">
+            <!-- EN-TÊTE OFFICIEL -->
+            <div class="header-container">
+                <div class="header-top">
+                    <div class="header-logo">
+                        <img src="{{university_logo}}" alt="Logo OPENLU">
+                    </div>
+                    <div class="header-text">
+                        <div class="republique">REPUBLIQUE DEMOCRATIQUE DU CONGO</div>
+                        <div class="enseignement">ENSEIGNEMENT SUPERIEUR, UNIVERSITAIRE,<br>RECHERCHE SCIENTIFIQUE ET INNOVATION</div>
+                        <div class="uni-name-main">OPEN LEARNING UNIVERSITY</div>
+                        <div class="uni-sigle">« OPENLU »</div>
+                        <div class="arrete">Arrêté Ministériel N°554/MINESU/CAB.MIN/MNB/MM/2022</div>
+                        <div class="contact-line">Site web: <a href="{{university_website}}">{{university_website_display}}</a> / E-mail: <a href="mailto:{{university_email}}">{{university_email}}</a></div>
+                        <div class="bp-line">B.P: {{university_bp}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{university_phone}}</div>
+                    </div>
+                </div>
+                <div class="green-bar"></div>
+                <!-- SECRÉTARIAT GÉNÉRAL ACADÉMIQUE -->
+                <div class="sga-section">
+                    <span class="sga-title">SECRÉTARIAT GÉNÉRAL ACADÉMIQUE</span>
+                </div>
+            </div>
+
+            <!-- TITRE RELEVÉ -->
+            <div class="domaine-section">
+                <div>
+                    <span class="titre-releve">{{num_releve}}</span>
+                </div>
+            </div>
+
+            <!-- INFOS ÉTUDIANT -->
+            <div class="student-info">
+                <div class="student-name">{{nom_etudiant}}</div>
+                <div class="field" style="margin-top:2px; margin-bottom: 3px;"><span class="label">Matricule :</span> {{matricule}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="label" style="width: auto;">Né(e) à :</span> {{lieu_date_naissance}}</div>
+                <div class="field"><span class="label">Domaine :</span> {{domaine}}</div>
+                <div class="field"><span class="label">Filière :</span> {{filiere}}</div>
+                <div class="field"><span class="label">Promotion :</span> {{promotion}}</div>
+                <div class="field"><span class="label" style="width: auto;">Année Académique :</span> {{annee_academique}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="label" style="width: auto;">Semestre :</span> {{semestre}}</div>
+            </div>
+
+            <!-- TABLEAU DES NOTES -->
+            <div class="table-wrapper">
+                {{tableau_notes}}
+            </div>
+
+            <!-- SIGNATURES -->
+            <div class="signatures" style="justify-content: flex-end;">
+                <div class="sig-block" style="text-align: center; width: 240px;">
+                    <div class="sig-date">Fait à {{lieu_date_jour}}</div>
+                    <div class="sig-title">Le Secrétaire Général Académique</div>
+                    <div class="sig-line" style="margin-top: 65px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

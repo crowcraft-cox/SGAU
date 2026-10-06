@@ -1,0 +1,63 @@
+# ============================================================
+# SGAU — .gitignore — Ne JAMAIS commiter ces fichiers
+# ============================================================
+
+# Variables d'environnement (contient les mots de passe DB & SMTP)
+.env
+.env.*
+*.env
+
+# Dépendances PHP (régénérées via composer install)
+vendor/
+
+# Répertoire de stockage (uploads utilisateurs, logs)
+storage/uploads/
+storage/logs/
+public/storage/
+
+# Fichiers temporaires et de débogage à la racine
+scratch/
+scratch_users.php
+check_output.php
+*.tmp
+*.bak
+*.log
+
+# Documents Word / PDF / images téléversés accidentellement
+*.docx
+*.pdf
+*.xlsx
+*.xls
+*.pptx
+
+# Captures d'écran et médias non applicatifs
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+!public/assets/images/
+!public/assets/icons/
+
+# Fichiers système OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Fichiers IDE
+.idea/
+.vscode/settings.json
+*.swp
+*.swo
+*~
+
+# Dump base de données
+*.sql
+*.sqlite
+*.db
+
+# Fichiers de déploiement sensibles
+*.pem
+*.key
+*.crt
+*.p12

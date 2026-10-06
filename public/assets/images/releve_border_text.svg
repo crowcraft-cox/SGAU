@@ -1,0 +1,24 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2100 2970" width="210mm" height="297mm">
+    <style>
+        .border-text {
+            font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            fill: #059669;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+    </style>
+
+    <!-- Top Border -->
+    <text x="40" y="45" class="border-text">MINISTERE DE L'ENSEIGNEMENT SUPERIEUR UNIVERSITAIRE RECHERCHE SCIENTIFIQUE ET INNOVATION • MINISTERE DE L'ENSEIGNEMENT SUPERIEUR UNIVERSITAIRE RECHERCHE SCIENTIFIQUE ET INNOVATION</text>
+
+    <!-- Bottom Border -->
+    <text x="40" y="2935" class="border-text">MINISTERE DE L'ENSEIGNEMENT SUPERIEUR UNIVERSITAIRE RECHERCHE SCIENTIFIQUE ET INNOVATION • MINISTERE DE L'ENSEIGNEMENT SUPERIEUR UNIVERSITAIRE RECHERCHE SCIENTIFIQUE ET INNOVATION</text>
+
+    <!-- Left Border -->
+    <text x="-2930" y="42" transform="rotate(-90)" class="border-text">MINISTERE DE L'ENSEIGNEMENT SUPERIEUR UNIVERSITAIRE RECHERCHE SCIENTIFIQUE ET INNOVATION • MINISTERE DE L'ENSEIGNEMENT SUPERIEUR UNIVERSITAIRE RECHERCHE SCIENTIFIQUE ET INNOVATION</text>
+
+    <!-- Right Border -->
+    <text x="40" y="-2058" transform="rotate(90)" class="border-text">MINISTERE DE L'ENSEIGNEMENT SUPERIEUR UNIVERSITAIRE RECHERCHE SCIENTIFIQUE ET INNOVATION • MINISTERE DE L'ENSEIGNEMENT SUPERIEUR UNIVERSITAIRE RECHERCHE SCIENTIFIQUE ET INNOVATION</text>
+</svg>

@@ -1,0 +1,1 @@
+role ENUM('admin','enseignant','etudiant','finance')
